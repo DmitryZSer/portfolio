@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DmitryZSer — Software Engineer / Full-Stack &amp; Data Systems</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>👨‍💻</text></svg>">
+<!-- если ты читаешь это в devtools — привет! попробуй код Konami где-нибудь на странице. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#1A1A1D;
+    --bg-alt:#1F1E22;
+    --surface:#252428;
+    --surface-hover:#2C2A2F;
+    --border:#3C393E;
+    --border-soft:#2A282C;
+    --text:#EDEBEC;
+    --text-rgb: 237,235,236;
+    --text-dim:#9B979B;
+    --text-faint:#656165;
+    --amber:#C3073F;
+    --amber-dim:#7A0A2C;
+    --amber-hover:#DA1E56;
+    --amber-glow: rgba(195,7,63,0.35);
+    --amber-rgb: 195,7,63;
+    --cyan:#950740;
+    --cyan-dim:#6F2232;
+    --cyan-dim-rgb: 111,34,50;
+    --glow-1: rgba(195,7,63,0.14);
+    --glow-2: rgba(149,7,64,0.12);
+    --scanline-opacity: 0.5;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --maxw: 1160px;
+  }
+
+  html[data-theme="light"]{
+    --bg:#F7F4F1;
+    --bg-alt:#EFEAE5;
+    --surface:#FFFFFF;
+    --surface-hover:#F3EEE9;
+    --border:#DBD1C6;
+    --border-soft:#E7E0D8;
+    --text:#3E3D41;
+    --text-rgb: 62,61,65;
+    --text-dim:#557A95;
+    --text-faint:#B1A296;
+    --amber:#379683;
+    --amber-dim:#2C7A6B;
+    --amber-hover:#45B39D;
+    --amber-glow: rgba(55,150,131,0.28);
+    --amber-rgb: 55,150,131;
+    --cyan:#557A95;
+    --cyan-dim:#7395AE;
+    --cyan-dim-rgb: 115,149,174;
+    --glow-1: rgba(55,150,131,0.10);
+    --glow-2: rgba(85,122,149,0.10);
+    --scanline-opacity: 0.25;
+  }
+
+  html{ transition: none; }
+  body{ transition: background 0.3s ease, color 0.3s ease; }
+  body::before, body::after{ transition: background 0.3s ease, opacity 0.3s ease; }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  #squares-bg{ display:none; }
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:
+      radial-gradient(ellipse 900px 520px at 12% -8%, var(--glow-1), transparent 60%),
+      radial-gradient(ellipse 700px 480px at 108% 18%, var(--glow-2), transparent 60%),
+      var(--bg);
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:var(--scanline-opacity);
+    background-image: repeating-linear-gradient(180deg, rgba(var(--text-rgb),0.025) 0px, rgba(var(--text-rgb),0.025) 1px, transparent 1px, transparent 3px);
+  }
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; margin:0; font-weight:600; letter-spacing:-0.01em;}
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ margin:0; padding:0; list-style:none; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--amber);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:18px; height:1px;
+    background:var(--amber-dim);
+    display:inline-block;
+  }
+  .eyebrow.center{ justify-content:center; }
+  .eyebrow.center::before{ display:none; }
+
+  section{ padding:120px 24px; position:relative; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; }
+
+  /* ---------- reveal ---------- */
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+  }
+  [data-reveal].is-visible{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    [data-reveal]{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(14,19,24,0.72);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono', monospace; font-size:0.92rem; font-weight:500; letter-spacing:0.02em; margin-right:auto; }
+  .logo-blip{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 0 rgba(var(--amber-rgb),0.6);
+    animation:blip-pulse 2.4s ease-out infinite;
+  }
+  @keyframes blip-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(var(--amber-rgb),0.55); }
+    70%{ box-shadow:0 0 0 9px rgba(var(--amber-rgb),0); }
+    100%{ box-shadow:0 0 0 0 rgba(var(--amber-rgb),0); }
+  }
+  .logo-sep{ color:var(--text-faint); }
+  .logo-sub{ color:var(--text-dim); font-size:0.78rem; }
+  .nav-links{ display:flex; align-items:center; gap:32px; font-size:0.9rem; }
+  .nav-links a{ color:var(--text-dim); transition:color 0.2s ease; }
+  .nav-links a:hover{ color:var(--text); }
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem !important;
+    letter-spacing:0.06em;
+    color:var(--bg) !important;
+    background:var(--amber);
+    padding:9px 16px;
+    border-radius:var(--radius-sm);
+  }
+  .nav-cta:hover{ background:var(--amber-hover); color:var(--bg) !important; }
+  .theme-toggle{
+    display:flex; align-items:center; justify-content:center;
+    width:34px; height:34px; margin-left:18px; flex-shrink:0;
+    background:transparent; border:1px solid var(--border); border-radius:50%;
+    color:var(--text-dim); cursor:pointer; font-size:0.95rem; line-height:1;
+    transition:border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .theme-toggle:hover{ border-color:var(--amber-dim); color:var(--amber); transform:rotate(-12deg); }
+  .nav-toggle{ display:none; }
+
+  @media (max-width:860px){
+    .nav-links{
+      position:fixed; top:60px; right:0; left:0;
+      flex-direction:column; align-items:flex-start; gap:0;
+      background:var(--bg-alt); border-bottom:1px solid var(--border);
+      padding:8px 24px 20px;
+      transform:translateY(-130%); transition:transform 0.3s ease;
+    }
+    .nav-links.open{ transform:translateY(0); }
+    .nav-links a{ padding:12px 0; width:100%; border-bottom:1px solid var(--border-soft); }
+    .nav-cta{ margin-top:12px; text-align:center; }
+    .nav-toggle{
+      display:flex; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:6px;
+    }
+    .nav-toggle span{ width:22px; height:2px; background:var(--text); display:block; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{ padding-top:180px; padding-bottom:100px; min-height:92vh; display:flex; align-items:center; }
+  .hero-inner{ display:flex; align-items:center; justify-content:space-between; gap:60px; max-width:var(--maxw); margin:0 auto; }
+  .hero-text{ max-width:620px; }
+  .hero-text h1{ font-size:clamp(2.5rem, 4.6vw, 3.6rem); line-height:1.12; }
+  .hero-text h1 .accent{ color:var(--amber); }
+  .hero-sub{ margin-top:24px; font-size:1.08rem; line-height:1.65; color:var(--text-dim); max-width:540px; }
+  .hero-stack{ margin-top:32px; display:flex; flex-wrap:wrap; gap:10px; }
+  .hero-stack span{
+    font-family:'IBM Plex Mono', monospace; font-size:0.76rem; letter-spacing:0.03em;
+    color:var(--text-dim); border:1px solid var(--border); padding:6px 12px; border-radius:20px;
+  }
+  .hero-actions{ margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{ font-family:'IBM Plex Mono', monospace; font-size:0.82rem; letter-spacing:0.04em; padding:14px 26px; border-radius:var(--radius-sm); transition:all 0.2s ease; display:inline-block; }
+  .btn-primary{ background:var(--amber); color:var(--bg); }
+  .btn-primary:hover{ background:var(--amber-hover); transform:translateY(-1px); }
+  .btn-ghost{ border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--amber-dim); color:var(--amber); }
+
+  /* radar */
+  .hero-radar{ position:relative; width:400px; height:400px; flex-shrink:0; }
+  .radar-ring{ position:absolute; border:1px solid var(--border-soft); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .radar-ring.r1{ width:100%; height:100%; }
+  .radar-ring.r2{ width:66%; height:66%; }
+  .radar-ring.r3{ width:32%; height:32%; border-color:var(--amber-dim); }
+  .radar-cross{ position:absolute; background:var(--border-soft); top:50%; left:50%; }
+  .radar-cross.h{ width:100%; height:1px; transform:translate(-50%,-50%); }
+  .radar-cross.v{ width:1px; height:100%; transform:translate(-50%,-50%); }
+  .radar-sweep{
+    position:absolute; inset:0; border-radius:50%; overflow:hidden;
+    animation:sweep-rotate 7s linear infinite;
+  }
+  .radar-sweep::before{
+    content:""; position:absolute; inset:0;
+    background:conic-gradient(from 0deg, transparent 0deg, transparent 320deg, var(--amber-glow) 350deg, var(--amber) 360deg);
+    opacity:0.7;
+  }
+  @keyframes sweep-rotate{ to{ transform:rotate(360deg); } }
+  .radar-center{ position:absolute; width:6px; height:6px; background:var(--amber); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 12px var(--amber-glow); }
+  .radar-blip{ position:absolute; display:flex; align-items:center; gap:6px; transform:translate(-50%,-50%); }
+  .radar-blip .dot{ width:5px; height:5px; border-radius:50%; background:var(--amber); animation:blip-flicker 3s ease-in-out infinite; }
+  .radar-blip .label{ font-family:'IBM Plex Mono', monospace; font-size:0.66rem; color:var(--text-dim); letter-spacing:0.06em; white-space:nowrap; }
+  @keyframes blip-flicker{ 0%,100%{ opacity:0.35; } 50%{ opacity:1; } }
+  .b1{ top:20.3%; left:79.7%; }
+  .b2{ top:20.3%; left:20.3%; animation-delay:0.6s; }
+  .b3{ top:79.7%; left:20.3%; animation-delay:1.2s; }
+  .b4{ top:79.7%; left:79.7%; animation-delay:1.8s; }
+
+  @media (max-width:980px){
+    .hero-inner{ flex-direction:column; }
+    .hero-radar{ width:280px; height:280px; }
+    .hero{ padding-top:150px; }
+  }
+
+  /* ---------- terminal (Ubuntu / Yaru Style) ---------- */
+  .hero-terminal{
+    margin-top:36px; max-width:520px;
+    background:#0b0f13; border:1px solid var(--border-soft); border-radius:10px 10px 6px 6px;
+    overflow:hidden; box-shadow:0 20px 50px -25px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 14px;
+    background:var(--bg-alt); border-bottom:1px solid var(--border-soft);
+    position:relative;
+  }
+  .term-title{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem;
+    color:var(--text-faint); letter-spacing:0.04em;
+    font-weight: 500;
+  }
+  .term-controls{
+    display:flex; align-items:center; gap:8px;
+  }
+  .term-btn{
+    width:16px; height:16px; border-radius:50%;
+    background:#333235; border:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; justify-content:center;
+    font-family:sans-serif; font-size:10px; line-height:1;
+    color:var(--text-faint); cursor:default; user-select:none;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  /* Иконки кнопок Ubuntu */
+  .term-btn-minimize::after { content: "–"; font-size: 11px; margin-top: -2px; }
+  .term-btn-maximize::after { content: "□"; font-size: 9px; font-weight: bold; }
+  .term-btn-close::after    { content: "✕"; font-size: 8px; font-weight: bold; }
+
+  /* Легкий ховер-эффект для интерактивного вида */
+  .term-btn-close:hover { background: #e0605a; color: #fff; }
+  .term-btn-minimize:hover, .term-btn-maximize:hover { background: #454348; color: #fff; }
+
+  .term-body{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; line-height:1.9;
+    color:var(--cyan); padding:16px 18px; min-height:104px;
+  }
+  .term-body .term-line{ color:var(--text-dim); }
+  .term-body .term-out{ color:var(--text-faint); }
+  .term-cursor{ display:inline-block; width:7px; height:14px; background:var(--amber); vertical-align:-2px; animation:cursor-blink 1s step-end infinite; }
+  @keyframes cursor-blink{ 50%{ opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .term-cursor{ animation:none; } }
+
+  /* ---------- section headers ---------- */
+  .section-head{ text-align:center; max-width:640px; margin:0 auto 64px; }
+  .section-head h2{ font-size:clamp(1.8rem,3vw,2.4rem); }
+  .section-head p{ margin-top:16px; color:var(--text-dim); font-size:1rem; line-height:1.6; }
+
+  /* ---------- expertise ---------- */
+  .expertise-card{
+    display:flex; gap:56px; align-items:center;
+    background:var(--surface); border:1px solid var(--border-soft);
+    border-radius:var(--radius-lg); padding:48px; margin-bottom:28px;
+  }
+  .expertise-card.reverse{ flex-direction:row-reverse; }
+  .expertise-index{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--amber);
+    letter-spacing:0.12em; border:1px solid var(--amber-dim); border-radius:20px;
+    padding:5px 14px; display:inline-block; margin-bottom:20px;
+  }
+  .expertise-body{ flex:1.1; min-width:280px; }
+  .expertise-body h3{ font-size:1.5rem; margin-bottom:14px; }
+  .expertise-body > p{ color:var(--text-dim); line-height:1.65; margin-bottom:24px; max-width:460px; }
+  .check-list{ display:grid; grid-template-columns:1fr 1fr; gap:10px 20px; }
+  .check-list li{ font-size:0.92rem; color:var(--text); display:flex; align-items:center; gap:10px; }
+  .check-list li::before{ content:"›"; color:var(--amber); font-weight:700; }
+  .expertise-visual{ flex:0.9; min-width:220px; display:flex; justify-content:center; }
+
+  /* flow diagram (web) */
+  .flow{ display:flex; flex-direction:column; gap:0; align-items:stretch; width:100%; max-width:220px; }
+  .flow-node{ font-family:'IBM Plex Mono', monospace; font-size:0.8rem; text-align:center; padding:12px 10px; border:1px solid var(--border); border-radius:8px; background:var(--bg-alt); color:var(--text-dim); }
+  .flow-node.active{ border-color:var(--amber-dim); color:var(--amber); }
+  .flow-arrow{ align-self:center; color:var(--text-faint); font-size:0.9rem; padding:4px 0; }
+
+  /* cube (data) */
+  .cube-wrap{ perspective:800px; width:160px; height:160px; }
+  .cube{ width:100%; height:100%; position:relative; transform-style:preserve-3d; animation:cube-spin 14s linear infinite; }
+  @keyframes cube-spin{ from{ transform:rotateX(-18deg) rotateY(0deg); } to{ transform:rotateX(-18deg) rotateY(360deg); } }
+  .cube-face{ position:absolute; width:160px; height:160px; border:1px solid var(--cyan-dim); background:rgba(var(--cyan-dim-rgb),0.08); }
+  .cube-face.front{ transform:translateZ(80px); }
+  .cube-face.back{ transform:rotateY(180deg) translateZ(80px); }
+  .cube-face.right{ transform:rotateY(90deg) translateZ(80px); }
+  .cube-face.left{ transform:rotateY(-90deg) translateZ(80px); }
+  .cube-face.top{ transform:rotateX(90deg) translateZ(80px); }
+  .cube-face.bottom{ transform:rotateX(-90deg) translateZ(80px); }
+
+  /* signal graphic (automation) */
+  .signal-wrap{ width:100%; max-width:220px; }
+  .signal-row{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .signal-node{ width:10px; height:10px; border-radius:50%; background:var(--amber); flex-shrink:0; }
+  .signal-line{ height:1px; background:var(--border); flex:1; position:relative; overflow:hidden; }
+  .signal-line::after{ content:""; position:absolute; top:0; left:-40%; width:40%; height:100%; background:var(--amber); animation:signal-run 2.4s linear infinite; }
+  .signal-row:nth-child(2) .signal-line::after{ animation-delay:0.5s; }
+  .signal-row:nth-child(3) .signal-line::after{ animation-delay:1s; }
+  @keyframes signal-run{ from{ left:-40%; } to{ left:100%; } }
+  .signal-label{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--text-dim); width:64px; flex-shrink:0; }
+
+  @media (max-width:760px){
+    .expertise-card, .expertise-card.reverse{ flex-direction:column; padding:32px; }
+    .check-list{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- projects ---------- */
+  .project-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .project-card{
+    background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg);
+    padding:32px; display:flex; flex-direction:column; transition:border-color 0.25s ease, transform 0.25s ease;
+  }
+  .project-card:hover{ border-color:var(--amber-dim); transform:translateY(-4px); }
+  .project-card.featured{ grid-column:span 3; display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center; padding:44px; }
+  .project-tag{ font-family:'IBM Plex Mono', monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; }
+  .project-card h3{ font-size:1.25rem; margin-bottom:12px; }
+  .project-card.featured h3{ font-size:1.7rem; }
+  .project-card p{ color:var(--text-dim); font-size:0.92rem; line-height:1.6; flex:1; }
+  .project-tags{ display:flex; flex-wrap:wrap; gap:8px; margin:18px 0; }
+  .project-tags span{ font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--text-dim); border:1px solid var(--border); border-radius:14px; padding:4px 10px; }
+  .project-link{ font-family:'IBM Plex Mono', monospace; font-size:0.8rem; color:var(--amber); display:inline-flex; align-items:center; gap:6px; margin-top:auto; }
+  .project-link:hover{ gap:10px; }
+  .project-readout{ font-family:'IBM Plex Mono', monospace; font-size:0.74rem; color:var(--text-faint); border:1px dashed var(--border); border-radius:10px; padding:20px; line-height:2; }
+
+  @media (max-width:900px){
+    .project-grid{ grid-template-columns:1fr; }
+    .project-card.featured{ grid-column:span 1; grid-template-columns:1fr; }
+  }
+
+  /* ---------- what I build ---------- */
+  .build-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .build-card{ border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:32px; background:var(--bg-alt); }
+  .build-card .icon{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--amber); border:1px solid var(--amber-dim); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:22px; }
+  .build-card h3{ font-size:1.15rem; margin-bottom:16px; }
+  .build-card li{ font-size:0.88rem; color:var(--text-dim); padding:6px 0; border-bottom:1px solid var(--border-soft); }
+  .build-card li:last-child{ border-bottom:none; }
+  @media (max-width:860px){ .build-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- approach (pipeline) ---------- */
+  .pipeline{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .pipe-step{ flex:1; text-align:center; position:relative; }
+  .pipe-num{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--text-faint); margin-bottom:10px; }
+  .pipe-dot{ width:14px; height:14px; border-radius:50%; background:var(--bg-alt); border:2px solid var(--amber); margin:0 auto 16px; position:relative; z-index:2; }
+  .pipe-line{ position:absolute; top:6px; left:calc(50% + 10px); right:calc(-50% + 10px); height:2px; background:var(--border); z-index:1; }
+  .pipe-step:last-child .pipe-line{ display:none; }
+  .pipe-step h4{ font-family:'Space Grotesk', sans-serif; font-size:0.98rem; margin-bottom:6px; }
+  .pipe-step p{ font-size:0.8rem; color:var(--text-dim); line-height:1.5; }
+  @media (max-width:860px){
+    .pipeline{ flex-direction:column; }
+    .pipe-line{ display:none; }
+    .pipe-step{ display:flex; gap:16px; text-align:left; margin-bottom:28px; align-items:flex-start; }
+    .pipe-dot{ margin:4px 0 0; flex-shrink:0; }
+  }
+
+  /* ---------- research ---------- */
+  .research-card{
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+    border:1px dashed var(--border); border-radius:var(--radius-md); padding:26px 32px; background:transparent;
+  }
+  .research-card + .research-card{ margin-top:20px; }
+  .research-card h4{ font-size:1.05rem; margin-bottom:6px; }
+  .research-card p{ color:var(--text-dim); font-size:0.86rem; max-width:520px; line-height:1.5; }
+  .research-tag{ font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.08em; text-transform:uppercase; }
+
+  /* ---------- stack ---------- */
+  .stack-groups{ display:grid; grid-template-columns:repeat(2,1fr); gap:36px 60px; }
+  .stack-group h4{ font-family:'IBM Plex Mono', monospace; font-size:0.74rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); margin-bottom:16px; }
+  .stack-pills{ display:flex; flex-wrap:wrap; gap:10px; }
+  .stack-pills span{ font-size:0.86rem; border:1px solid var(--border); border-radius:8px; padding:8px 14px; color:var(--text); }
+  @media (max-width:700px){ .stack-groups{ grid-template-columns:1fr; } }
+
+  /* ---------- contact ---------- */
+  .contact-panel{
+    border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:64px 48px;
+    text-align:center; background:radial-gradient(circle at 50% 0%, rgba(var(--amber-rgb),0.06), transparent 60%);
+  }
+  .contact-panel h2{ font-size:clamp(1.9rem,3.4vw,2.6rem); margin-bottom:20px; }
+  .contact-panel p{ color:var(--text-dim); max-width:480px; margin:0 auto 36px; line-height:1.6; }
+  .contact-actions{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+  footer{ padding:32px 24px; text-align:center; font-family:'IBM Plex Mono', monospace; font-size:0.74rem; color:var(--text-faint); border-top:1px solid var(--border-soft); }
+</style>
+
+<style>
+    @keyframes themeTogglePulseLight {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 200, 200, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(200, 200, 200, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200, 200, 200, 0); }
+    }
+    
+    @keyframes themeTogglePulseDark {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(100, 100, 255, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(100, 100, 255, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(100, 100, 255, 0); }
+    }
+    
+    .theme-toggle.light-theme {
+        animation: themeTogglePulseLight 1.5s ease-out;
+    }
+    
+    .theme-toggle.dark-theme {
+        animation: themeTogglePulseDark 1.5s ease-out;
+    }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo"><span class="logo-blip" title="status: online · tea: mandatory"></span>DmitryZSer<span class="logo-sep">/</span><span class="logo-sub">ENGINEERING</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#expertise">Expertise</a>
+      <a href="#projects">Projects</a>
+      <a href="#approach">Approach</a>
+      <a href="#stack">Stack</a>
+      <a href="#contact" class="nav-cta">Contact</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme">
+      <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+    </button>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">SOFTWARE ENGINEER — FULL-STACK &amp; DATA SYSTEMS</p>
+        <h1>Building reliable software for <span class="accent">data-intensive</span> and business-critical applications.</h1>
+        <p class="hero-sub">I like taking a problem apart until it's just data flowing through a system, then building whatever gets it from A to B reliably — a web platform, a processing pipeline, an automation layer. The projects below are examples of that habit, not the limit of it.</p>
+        <div class="hero-stack">
+          <span>Python</span><span>React</span><span>FastAPI</span><span>PostgreSQL</span><span>Docker</span><span>Machine Learning</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        </div>
+        <div class="hero-terminal" aria-hidden="true">
+          <div class="term-bar">
+            <!-- Пустая заглушка слева для точной центровки заголовка -->
+            <div style="width: 64px;"></div> 
+            
+            <span class="term-title">DmitryZSer@ubuntu: ~$</span>
+            
+            <!-- Кнопки управления окном справа -->
+            <div class="term-controls">
+              <span class="term-btn term-btn-minimize" title="Minimize"></span>
+              <span class="term-btn term-btn-maximize" title="Maximize"></span>
+              <span class="term-btn term-btn-close" title="Close"></span>
+            </div>
+          </div>
+          <div class="term-body" id="termBody"></div>
+        </div>
+      </div>
+      <div class="hero-radar" aria-hidden="true">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <div class="radar-cross h"></div>
+        <div class="radar-cross v"></div>
+        <div class="radar-sweep"></div>
+        <div class="radar-center"></div>
+        <div class="radar-blip b1"><span class="dot"></span><span class="label">WEB</span></div>
+        <div class="radar-blip b2"><span class="dot"></span><span class="label">DATA</span></div>
+        <div class="radar-blip b3"><span class="dot"></span><span class="label">AUTO</span></div>
+        <div class="radar-blip b4"><span class="dot"></span><span class="label">NET</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORE EXPERTISE -->
+  <section id="expertise">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">CORE EXPERTISE</p>
+        <h2>Three disciplines, one engineer.</h2>
+        <p>Most portfolios show one skill wrapped in different projects. Mine shows three — full-stack delivery, scientific data processing, and automation — because that combination is what actually gets used on real engineering teams.</p>
+      </div>
+
+      <div class="expertise-card" data-reveal>
+        <div class="expertise-body">
+          <span class="expertise-index">01 · FULL-STACK WEB</span>
+          <h3>Full-Stack Web Development</h3>
+          <p>Comfortable owning a web product end to end — schema, API, auth, admin surface, the interface people actually click through. Less interested in the trendiest framework, more in whether the thing holds up once real users and real edge cases show up. <em style="color:var(--text-faint); font-style:normal;">Example: a publishing platform with search, roles and moderation, built from scratch.</em></p>
+          <ul class="check-list">
+            <li>Authentication &amp; Authorization</li>
+            <li>Admin panels</li>
+            <li>REST APIs</li>
+            <li>Rich text editors</li>
+            <li>Search systems</li>
+            <li>Role-based access</li>
+            <li>Database design</li>
+            <li>Responsive UI</li>
+          </ul>
+        </div>
+        <div class="expertise-visual">
+          <div class="flow">
+            <div class="flow-node">Browser</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node active">React</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node active">FastAPI</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node">PostgreSQL</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expertise-card reverse" data-reveal>
+        <div class="expertise-body">
+          <span class="expertise-index">02 · DATA &amp; SCIENTIFIC COMPUTING</span>
+          <h3>Data Processing &amp; Scientific Computing</h3>
+          <p>Comfortable with data once it stops looking like a spreadsheet — multi-dimensional arrays, custom numerical algorithms, the kind of visualization that has to earn someone's trust before they act on it. <em style="color:var(--text-faint); font-style:normal;">Example: a thesis project decoding raw weather-radar volumes into turbulence and wind-shear warnings for aviation.</em></p>
+          <ul class="check-list">
+            <li>Processing 3D radar datasets</li>
+            <li>Scientific algorithms</li>
+            <li>Trilinear interpolation</li>
+            <li>Wind shear analysis</li>
+            <li>Data visualization</li>
+            <li>Plotly &amp; Matplotlib</li>
+            <li>Numerical computing</li>
+            <li>F-factor / RRF modeling</li>
+          </ul>
+        </div>
+        <div class="expertise-visual">
+          <div class="cube-wrap">
+            <div class="cube">
+              <div class="cube-face front"></div>
+              <div class="cube-face back"></div>
+              <div class="cube-face right"></div>
+              <div class="cube-face left"></div>
+              <div class="cube-face top"></div>
+              <div class="cube-face bottom"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="expertise-card" data-reveal>
+        <div class="expertise-body">
+          <span class="expertise-index">03 · AUTOMATION &amp; AI INTEGRATIONS</span>
+          <h3>Automation &amp; AI Integrations</h3>
+          <p>Treating AI as a component to wire into a system, not a chat window to marvel at — provider-agnostic, swappable, and boring in the way infrastructure should be boring. <em style="color:var(--text-faint); font-style:normal;">Example: one bot logic running identically over a terminal and Telegram.</em></p>
+          <ul class="check-list">
+            <li>Multi-provider AI client</li>
+            <li>Telegram integration</li>
+            <li>Console interface</li>
+            <li>OpenAI-compatible APIs</li>
+            <li>Streaming responses</li>
+            <li>Provider abstraction</li>
+          </ul>
+        </div>
+        <div class="expertise-visual">
+          <div class="signal-wrap">
+            <div class="signal-row"><span class="signal-label">TERMINAL</span><span class="signal-line"></span><span class="signal-node"></span></div>
+            <div class="signal-row"><span class="signal-label">TELEGRAM</span><span class="signal-line"></span><span class="signal-node"></span></div>
+            <div class="signal-row"><span class="signal-label">API</span><span class="signal-line"></span><span class="signal-node"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">FEATURED PROJECTS</p>
+        <h2>Selected work</h2>
+        <p>Four projects, four different problems — research-grade signal processing, a production content platform, an AI integration layer, and network infrastructure.</p>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card featured" data-reveal>
+          <div>
+            <p class="project-tag">Research &amp; Engineering</p>
+            <h3>Meteorological Radar Analysis System</h3>
+            <p>The project that best shows how I approach a hard data problem: take a domain nobody hands you a tutorial for, read the papers, then write the pipeline that turns a raw 3D signal into something a pilot can actually trust. Built as a thesis project for AO "Navigator", aimed at flagging turbulence and wind shear earlier.</p>
+            <div class="project-tags">
+              <span>3D data processing</span><span>Trilinear interpolation</span><span>F-factor modeling</span><span>Plotly</span><span>Matplotlib</span>
+            </div>
+            <a class="project-link" href="https://github.com/DmitryZSer/Meteo_RLS" target="_blank" rel="noopener">View on GitHub →</a>
+          </div>
+          <div class="project-readout">
+            SRC: PWS binary arrays<br>
+            OUT: radial velocity, RRF, F-factor<br>
+            VIS: 3D cube slices · trajectories<br>
+            QA: module-level test coverage
+          </div>
+        </div>
+
+        <div class="project-card" data-reveal>
+          <p class="project-tag">Full-Stack Web</p>
+          <h3>Content Management Platform</h3>
+          <p>What a "simple blog" actually needs once you add real users: roles, moderation, search that works, an admin who can undo mistakes. This one covers all of it.</p>
+          <div class="project-tags"><span>Auth</span><span>Search</span><span>Admin panel</span></div>
+          <a class="project-link" href="https://github.com/DmitryZSer/InfoBase" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+
+        <div class="project-card" data-reveal>
+          <p class="project-tag">Automation</p>
+          <h3>AI Terminal &amp; Telegram Assistant</h3>
+          <p>A test of how thin an integration layer can be: one core client, two completely different front doors, and no lock-in to a single model provider.</p>
+          <div class="project-tags"><span>Python</span><span>Telegram API</span><span>LLM integration</span></div>
+          <a class="project-link" href="https://github.com/DmitryZSer/AiChat-tg-terminal" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+
+        <div class="project-card" data-reveal>
+          <p class="project-tag">Networking</p>
+          <h3>Network Infrastructure Labs</h3>
+          <p>Before trusting a system to talk over a network, it helps to have built the network yourself — routing, address translation, access rules and all the ways a packet can get lost on the way.</p>
+          <div class="project-tags"><span>VLAN</span><span>OSPF / EIGRP</span><span>NAT · ACL</span></div>
+          <a class="project-link" href="https://github.com/DmitryZSer/Computer-networks-CiscoPacketTracer" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT I BUILD -->
+  <section id="build">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">WHAT I BUILD</p>
+        <h2>Outcomes, not tech lists</h2>
+      </div>
+      <div class="build-grid">
+        <div class="build-card" data-reveal>
+          <div class="icon">W</div>
+          <h3>Business Web Applications</h3>
+          <ul>
+            <li>CRM</li><li>CMS</li><li>Admin panels</li><li>Dashboards</li><li>Authentication</li>
+          </ul>
+        </div>
+        <div class="build-card" data-reveal>
+          <div class="icon">D</div>
+          <h3>Data Processing Systems</h3>
+          <ul>
+            <li>Scientific software</li><li>Analytics</li><li>Visualization</li><li>Large datasets</li><li>Numerical algorithms</li>
+          </ul>
+        </div>
+        <div class="build-card" data-reveal>
+          <div class="icon">A</div>
+          <h3>Automation Tools</h3>
+          <ul>
+            <li>Telegram bots</li><li>Python scripts</li><li>API integrations</li><li>AI assistants</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENGINEERING APPROACH -->
+  <section id="approach">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">ENGINEERING APPROACH</p>
+        <h2>How a project actually moves</h2>
+      </div>
+      <div class="pipeline" data-reveal>
+        <div class="pipe-step"><div class="pipe-num">STAGE 01</div><div class="pipe-dot"></div><div class="pipe-line"></div><h4>Problem analysis</h4><p>Understand the domain and constraints before writing code.</p></div>
+        <div class="pipe-step"><div class="pipe-num">STAGE 02</div><div class="pipe-dot"></div><div class="pipe-line"></div><h4>Architecture</h4><p>Design data flow, schema, and API boundaries.</p></div>
+        <div class="pipe-step"><div class="pipe-num">STAGE 03</div><div class="pipe-dot"></div><div class="pipe-line"></div><h4>Implementation</h4><p>Build backend, frontend, and processing logic in parallel.</p></div>
+        <div class="pipe-step"><div class="pipe-num">STAGE 04</div><div class="pipe-dot"></div><div class="pipe-line"></div><h4>Testing</h4><p>Verify correctness at the module and integration level.</p></div>
+        <div class="pipe-step"><div class="pipe-num">STAGE 05</div><div class="pipe-dot"></div><h4>Deployment</h4><p>Ship with containers and a repeatable release process.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH & LEARNING -->
+  <section id="research">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">RESEARCH &amp; LEARNING</p>
+        <h2>Study projects</h2>
+      </div>
+      <div class="research-card" data-reveal>
+        <div>
+          <h4>Linear Regression — Applied ML Coursework</h4>
+          <p>Practical exercises and assignments written for a "Python for Marketing Analytics" course, covering data preparation and regression modeling.</p>
+        </div>
+        <div style="text-align:right;">
+          <p class="research-tag">scikit-learn · Python</p>
+          <a class="project-link" href="https://github.com/DmitryZSer/LinearRegression-Sklearn" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="research-card" data-reveal>
+        <div>
+          <h4>Real Estate Information System — Windows Forms &amp; SQLite</h4>
+          <p>Desktop app for managing deals, employees and property records with a generic SQLite data-access layer, password hashing, input validation, and role-based access — an admin panel for CRUD operations versus search-only access for regular users.</p>
+        </div>
+        <div style="text-align:right;">
+          <p class="research-tag">C# · Windows Forms · SQLite</p>
+          <a class="project-link" href="https://github.com/DmitryZSer/Real_Estate_WindowsForms_SQLite" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+      <div class="research-card" data-reveal>
+        <div>
+          <h4>Unity Clicker</h4>
+          <p>A clicker game where score comes from defeating enemies across scaling levels, with achievements, pause, per-enemy animations, level-based locations and sound design, and a settings menu for muting audio and resetting progress.</p>
+        </div>
+        <div style="text-align:right;">
+          <p class="research-tag">Unity · C#</p>
+          <a class="project-link" href="https://github.com/DmitryZSer/Clicker-Unity" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow center">TECH STACK</p>
+        <h2>Tools of the trade</h2>
+      </div>
+      <div class="stack-groups" data-reveal>
+        <div class="stack-group">
+          <h4>Languages</h4>
+          <div class="stack-pills"><span>Python</span><span>JavaScript / TypeScript</span><span>SQL</span></div>
+        </div>
+        <div class="stack-group">
+          <h4>Web &amp; Backend</h4>
+          <div class="stack-pills"><span>React</span><span>FastAPI</span><span>REST APIs</span><span>PostgreSQL</span></div>
+        </div>
+        <div class="stack-group">
+          <h4>Data &amp; ML</h4>
+          <div class="stack-pills"><span>NumPy</span><span>Pandas</span><span>scikit-learn</span><span>Matplotlib</span><span>Plotly</span></div>
+        </div>
+        <div class="stack-group">
+          <h4>Infrastructure &amp; Networking</h4>
+          <div class="stack-pills"><span>Docker</span><span>Git</span><span title="daily driver since forever, no dual-boot regrets">Ubuntu / Linux</span><span>VLAN / OSPF / EIGRP</span><span>NAT / ACL</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-panel" data-reveal>
+        <p class="eyebrow center">GET IN TOUCH</p>
+        <h2>Let's build something reliable.</h2>
+        <p>Open to full-stack, data-engineering, and automation contract work. Email is the most reliable way to reach me — GitHub is where the code lives.</p>
+        <div class="contact-actions">
+          <a href="mailto:zhuravskiy.work@gmail.com" class="btn btn-primary">zhuravskiy.work@gmail.com</a>
+          <a href="https://github.com/DmitryZSer" target="_blank" rel="noopener" class="btn btn-ghost">GitHub Profile</a>
+        </div>
+        <div class="contact-actions" style="margin-top:14px;">
+          <a href="#top" class="btn btn-ghost" style="font-size:0.74rem; padding:10px 20px;">Back to top ↑</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 DmitryZSer — SOFTWARE ENGINEERING · BUILT WITH PYTHON, REACT, UBUNTU &amp; A LOT OF TEA
+</footer>
+
+<script>
+  // theme toggle (light/dark) — kept in memory only, resets on reload
+  (function themeToggle(){
+    const btn = document.getElementById('themeToggle');
+    const icon = btn.querySelector('.theme-toggle-icon');
+    let theme = 'dark';
+    function apply(){
+      if(theme === 'light'){
+        document.documentElement.setAttribute('data-theme', 'light');
+        icon.textContent = '☀';
+        btn.setAttribute('aria-label', 'Switch to dark theme');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        icon.textContent = '☾';
+        btn.setAttribute('aria-label', 'Switch to light theme');
+      }
+    }
+    btn.addEventListener('click', () => {
+      theme = theme === 'light' ? 'dark' : 'light';
+      apply();
+    });
+    apply();
+  })();
+
+  // mobile nav
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ TERMINAL TYPEWRITER ============ */
+  (function terminal(){
+    const el = document.getElementById('termBody');
+    if(!el) return;
+
+    const lines = [
+      { cmd: 'whoami', out: 'DmitryZSer — full-stack / data / automation engineer' },
+      { cmd: 'cat /etc/os-release | grep PRETTY', out: 'PRETTY_NAME="Ubuntu 26.04 LTS"' },
+      { cmd: 'uname -a', out: 'Linux 7.0.0-27-generic x86_64 GNU/Linux' },
+      { cmd: 'sudo apt update && sudo apt upgrade -y', out: 'reading state information... done. (creature of habit)' },
+      { cmd: 'ping windows.local', out: 'Destination Host Unreachable — uninstalled since 2024' },
+      { cmd: 'git commit -m "it works on my machine"', out: '[main] 1 file changed, 0 regrets' },
+      { cmd: 'echo $STATUS', out: 'online · tea & sleep: required' }
+    ];
+
+    let li = 0;
+    const cursor = '<span class="term-cursor"></span>';
+
+    function typeLine(){
+      const line = lines[li % lines.length];
+      let ci = 0;
+      el.innerHTML = '';
+      const promptSpan = document.createElement('div');
+      promptSpan.className = 'term-line';
+      el.appendChild(promptSpan);
+
+      if(reduceMotion){
+        promptSpan.innerHTML = '<span style="color:var(--amber)">$</span> ' + line.cmd;
+        const outSpan = document.createElement('div');
+        outSpan.className = 'term-out';
+        outSpan.textContent = line.out;
+        el.appendChild(outSpan);
+        li++;
+        setTimeout(typeLine, 2600);
+        return;
+      }
+
+      const typer = setInterval(() => {
+        ci++;
+        promptSpan.innerHTML = '<span style="color:var(--amber)">$</span> ' + line.cmd.slice(0, ci) + cursor;
+        if(ci >= line.cmd.length){
+          clearInterval(typer);
+          promptSpan.innerHTML = '<span style="color:var(--amber)">$</span> ' + line.cmd;
+          setTimeout(() => {
+            const outSpan = document.createElement('div');
+            outSpan.className = 'term-out';
+            outSpan.textContent = line.out;
+            el.appendChild(outSpan);
+            li++;
+            setTimeout(typeLine, 2200);
+          }, 260);
+        }
+      }, 34);
+    }
+    typeLine();
+  })();
+
+  /* ============ EASTER EGGS ============ */
+  console.log(
+    '%c📡 signal acquired.%c\nlooking for something? the source is right here.\ngithub.com/DmitryZSer — say hi.',
+    'color:#C3073F; font-family:monospace; font-size:14px; font-weight:bold;',
+    'color:#9B979B; font-family:monospace; font-size:12px;'
+  );
+
+(function konami() {
+  const seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight'];
+  const finalKeys = ['b', 'a', 'и', 'ф']; 
+  let pos = 0;
+
+  window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase(); 
+
+    if (pos < seq.length) {
+      pos = (key === seq[pos].toLowerCase()) ? pos + 1 : 0;
+    }
+    else if (finalKeys.includes(key)) {
+      pos++;
+    } else {
+      pos = 0; 
+    }
+
+    if (pos === seq.length + 1) { 
+      pos = 0;
+      const toast = document.createElement('div');
+      toast.textContent = '📡 UFO not detected. Still just this page and you.';
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--amber);color:var(--amber);font-family:monospace;font-size:0.8rem;padding:12px 20px;border-radius:8px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,0.5);';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3200);
+    }
+  });
+})();
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        if (prefersDarkScheme.matches) {
+            document.body.classList.add('dark-theme');
+            themeToggle.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+            themeToggle.classList.add('light-theme');
+        }
+        
+        themeToggle.style.animationIterationCount = '2';
+    });
+</script>
+</body>
+</html>
