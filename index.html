@@ -10,6 +10,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+ <!-- Скрипт для определения темы и языка ДО загрузки контента -->
+    <script>
+        (function() {
+            // 1. Определение темы
+            const userPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = userPrefersDark ? 'dark' : 'light';
+            
+            // 2. Определение языка
+            // Берем первый язык из настроек браузера или используем 'ru' по умолчанию
+            const lang = navigator.language || navigator.userLanguage || 'ru';
+            const shortLang = lang.split('-')[0]; // Получаем 'ru', 'en', 'de' и т.д.
+
+            // Применяем атрибуты к html элементу немедленно
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('lang', shortLang);
+
+            // Опционально: сохранение выбора в localStorage, если пользователь менял его вручную ранее
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
+
 <style>
   :root{
     --bg:#1A1A1D;
@@ -177,6 +201,15 @@
     transition:border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
   .theme-toggle:hover{ border-color:var(--amber-dim); color:var(--amber); transform:rotate(-12deg); }
+  .lang-toggle{
+    display:flex; align-items:center; justify-content:center;
+    height:34px; margin-left:10px; padding:0 12px; flex-shrink:0;
+    background:transparent; border:1px solid var(--border); border-radius:20px;
+    color:var(--text-dim); cursor:pointer; font-size:0.74rem; line-height:1;
+    font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em;
+    transition:border-color 0.2s ease, color 0.2s ease;
+  }
+  .lang-toggle:hover{ border-color:var(--amber-dim); color:var(--amber); }
   .nav-toggle{ display:none; }
 
   @media (max-width:860px){
@@ -506,14 +539,17 @@
   <div class="nav-inner">
     <a href="#top" class="logo"><span class="logo-blip" title="status: online · tea: mandatory"></span>DmitryZSer<span class="logo-sep">/</span><span class="logo-sub">ENGINEERING</span></a>
     <nav class="nav-links" id="navLinks">
-      <a href="#expertise">Expertise</a>
-      <a href="#projects">Projects</a>
-      <a href="#approach">Approach</a>
-      <a href="#stack">Stack</a>
-      <a href="#contact" class="nav-cta">Contact</a>
+      <a href="#expertise" data-i18n="nav.expertise">Expertise</a>
+      <a href="#projects" data-i18n="nav.projects">Projects</a>
+      <a href="#approach" data-i18n="nav.approach">Approach</a>
+      <a href="#stack" data-i18n="nav.stack">Stack</a>
+      <a href="#contact" class="nav-cta" data-i18n="nav.contact">Contact</a>
     </nav>
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch theme">
       <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+    </button>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language" title="Switch language">
+      <span id="langToggleLabel">RU</span>
     </button>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
@@ -525,15 +561,15 @@
   <section class="hero" id="top">
     <div class="hero-inner">
       <div class="hero-text">
-        <p class="eyebrow">SOFTWARE ENGINEER — FULL-STACK &amp; DATA SYSTEMS</p>
-        <h1>Building reliable software for <span class="accent">data-intensive</span> and business-critical applications.</h1>
-        <p class="hero-sub">I like taking a problem apart until it's just data flowing through a system, then building whatever gets it from A to B reliably — a web platform, a processing pipeline, an automation layer. The projects below are examples of that habit, not the limit of it.</p>
+        <p class="eyebrow" data-i18n="hero.eyebrow">SOFTWARE ENGINEER — FULL-STACK &amp; DATA SYSTEMS</p>
+        <h1 data-i18n="hero.title">Building reliable software for <span class="accent">data-intensive</span> and business-critical applications.</h1>
+        <p class="hero-sub" data-i18n="hero.sub">I like taking a problem apart until it's just data flowing through a system, then building whatever gets it from A to B reliably — a web platform, a processing pipeline, an automation layer. The projects below are examples of that habit, not the limit of it.</p>
         <div class="hero-stack">
           <span>Python</span><span>React</span><span>FastAPI</span><span>PostgreSQL</span><span>Docker</span><span>Machine Learning</span>
         </div>
         <div class="hero-actions">
-          <a href="#projects" class="btn btn-ghost">View Projects</a>
-          <a href="#contact" class="btn btn-primary">Get in Touch</a>
+          <a href="#projects" class="btn btn-ghost" data-i18n="hero.viewProjects">View Projects</a>
+          <a href="#contact" class="btn btn-primary" data-i18n="hero.getInTouch">Get in Touch</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -570,25 +606,25 @@
   <section id="expertise">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">CORE EXPERTISE</p>
-        <h2>Three disciplines, one engineer.</h2>
-        <p>Most portfolios show one skill wrapped in different projects. Mine shows three — full-stack delivery, scientific data processing, and automation — because that combination is what actually gets used on real engineering teams.</p>
+        <p class="eyebrow center" data-i18n="expertise.eyebrow">CORE EXPERTISE</p>
+        <h2 data-i18n="expertise.title">Three disciplines, one engineer.</h2>
+        <p data-i18n="expertise.sub">Most portfolios show one skill wrapped in different projects. Mine shows three — full-stack delivery, scientific data processing, and automation — because that combination is what actually gets used on real engineering teams.</p>
       </div>
 
       <div class="expertise-card" data-reveal>
         <div class="expertise-body">
-          <span class="expertise-index">01 · FULL-STACK WEB</span>
-          <h3>Full-Stack Web Development</h3>
-          <p>Comfortable owning a web product end to end — schema, API, auth, admin surface, the interface people actually click through. Less interested in the trendiest framework, more in whether the thing holds up once real users and real edge cases show up. <em style="color:var(--text-faint); font-style:normal;">Example: a publishing platform with search, roles and moderation, built from scratch.</em></p>
+          <span class="expertise-index" data-i18n="expertise.1.index">01 · FULL-STACK WEB</span>
+          <h3 data-i18n="expertise.1.title">Full-Stack Web Development</h3>
+          <p data-i18n="expertise.1.body">Comfortable owning a web product end to end — schema, API, auth, admin surface, the interface people actually click through. Less interested in the trendiest framework, more in whether the thing holds up once real users and real edge cases show up. <em style="color:var(--text-faint); font-style:normal;">Example: a publishing platform with search, roles and moderation, built from scratch.</em></p>
           <ul class="check-list">
-            <li>Authentication &amp; Authorization</li>
-            <li>Admin panels</li>
-            <li>REST APIs</li>
-            <li>Rich text editors</li>
-            <li>Search systems</li>
-            <li>Role-based access</li>
-            <li>Database design</li>
-            <li>Responsive UI</li>
+            <li data-i18n="expertise.1.li1">Authentication &amp; Authorization</li>
+            <li data-i18n="expertise.1.li2">Admin panels</li>
+            <li data-i18n="expertise.1.li3">REST APIs</li>
+            <li data-i18n="expertise.1.li4">Rich text editors</li>
+            <li data-i18n="expertise.1.li5">Search systems</li>
+            <li data-i18n="expertise.1.li6">Role-based access</li>
+            <li data-i18n="expertise.1.li7">Database design</li>
+            <li data-i18n="expertise.1.li8">Responsive UI</li>
           </ul>
         </div>
         <div class="expertise-visual">
@@ -606,18 +642,18 @@
 
       <div class="expertise-card reverse" data-reveal>
         <div class="expertise-body">
-          <span class="expertise-index">02 · DATA &amp; SCIENTIFIC COMPUTING</span>
-          <h3>Data Processing &amp; Scientific Computing</h3>
-          <p>Comfortable with data once it stops looking like a spreadsheet — multi-dimensional arrays, custom numerical algorithms, the kind of visualization that has to earn someone's trust before they act on it. <em style="color:var(--text-faint); font-style:normal;">Example: a thesis project decoding raw weather-radar volumes into turbulence and wind-shear warnings for aviation.</em></p>
+          <span class="expertise-index" data-i18n="expertise.2.index">02 · DATA &amp; SCIENTIFIC COMPUTING</span>
+          <h3 data-i18n="expertise.2.title">Data Processing &amp; Scientific Computing</h3>
+          <p data-i18n="expertise.2.body">Comfortable with data once it stops looking like a spreadsheet — multi-dimensional arrays, custom numerical algorithms, the kind of visualization that has to earn someone's trust before they act on it. <em style="color:var(--text-faint); font-style:normal;">Example: a thesis project decoding raw weather-radar volumes into turbulence and wind-shear warnings for aviation.</em></p>
           <ul class="check-list">
-            <li>Processing 3D radar datasets</li>
-            <li>Scientific algorithms</li>
-            <li>Trilinear interpolation</li>
-            <li>Wind shear analysis</li>
-            <li>Data visualization</li>
-            <li>Plotly &amp; Matplotlib</li>
-            <li>Numerical computing</li>
-            <li>F-factor / RRF modeling</li>
+            <li data-i18n="expertise.2.li1">Processing 3D radar datasets</li>
+            <li data-i18n="expertise.2.li2">Scientific algorithms</li>
+            <li data-i18n="expertise.2.li3">Trilinear interpolation</li>
+            <li data-i18n="expertise.2.li4">Wind shear analysis</li>
+            <li data-i18n="expertise.2.li5">Data visualization</li>
+            <li data-i18n="expertise.2.li6">Plotly &amp; Matplotlib</li>
+            <li data-i18n="expertise.2.li7">Numerical computing</li>
+            <li data-i18n="expertise.2.li8">F-factor / RRF modeling</li>
           </ul>
         </div>
         <div class="expertise-visual">
@@ -636,16 +672,16 @@
 
       <div class="expertise-card" data-reveal>
         <div class="expertise-body">
-          <span class="expertise-index">03 · AUTOMATION &amp; AI INTEGRATIONS</span>
-          <h3>Automation &amp; AI Integrations</h3>
-          <p>Treating AI as a component to wire into a system, not a chat window to marvel at — provider-agnostic, swappable, and boring in the way infrastructure should be boring. <em style="color:var(--text-faint); font-style:normal;">Example: one bot logic running identically over a terminal and Telegram.</em></p>
+          <span class="expertise-index" data-i18n="expertise.3.index">03 · AUTOMATION &amp; AI INTEGRATIONS</span>
+          <h3 data-i18n="expertise.3.title">Automation &amp; AI Integrations</h3>
+          <p data-i18n="expertise.3.body">Treating AI as a component to wire into a system, not a chat window to marvel at — provider-agnostic, swappable, and boring in the way infrastructure should be boring. <em style="color:var(--text-faint); font-style:normal;">Example: one bot logic running identically over a terminal and Telegram.</em></p>
           <ul class="check-list">
-            <li>Multi-provider AI client</li>
-            <li>Telegram integration</li>
-            <li>Console interface</li>
-            <li>OpenAI-compatible APIs</li>
-            <li>Streaming responses</li>
-            <li>Provider abstraction</li>
+            <li data-i18n="expertise.3.li1">Multi-provider AI client</li>
+            <li data-i18n="expertise.3.li2">Telegram integration</li>
+            <li data-i18n="expertise.3.li3">Console interface</li>
+            <li data-i18n="expertise.3.li4">OpenAI-compatible APIs</li>
+            <li data-i18n="expertise.3.li5">Streaming responses</li>
+            <li data-i18n="expertise.3.li6">Provider abstraction</li>
           </ul>
         </div>
         <div class="expertise-visual">
@@ -663,23 +699,23 @@
   <section id="projects">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">FEATURED PROJECTS</p>
-        <h2>Selected work</h2>
-        <p>Four projects, four different problems — research-grade signal processing, a production content platform, an AI integration layer, and network infrastructure.</p>
+        <p class="eyebrow center" data-i18n="projects.eyebrow">FEATURED PROJECTS</p>
+        <h2 data-i18n="projects.title">Selected work</h2>
+        <p data-i18n="projects.sub">Four projects, four different problems — research-grade signal processing, a production content platform, an AI integration layer, and network infrastructure.</p>
       </div>
 
       <div class="project-grid">
         <div class="project-card featured" data-reveal>
           <div>
-            <p class="project-tag">Research &amp; Engineering</p>
-            <h3>Meteorological Radar Analysis System</h3>
-            <p>The project that best shows how I approach a hard data problem: take a domain nobody hands you a tutorial for, read the papers, then write the pipeline that turns a raw 3D signal into something a pilot can actually trust. Built as a thesis project for AO "Navigator", aimed at flagging turbulence and wind shear earlier.</p>
+            <p class="project-tag" data-i18n="projects.featured.tag">Research &amp; Engineering</p>
+            <h3 data-i18n="projects.featured.title">Meteorological Radar Analysis System</h3>
+            <p data-i18n="projects.featured.body">The project that best shows how I approach a hard data problem: take a domain nobody hands you a tutorial for, read the papers, then write the pipeline that turns a raw 3D signal into something a pilot can actually trust. Built as a thesis project for AO "Navigator", aimed at flagging turbulence and wind shear earlier.</p>
             <div class="project-tags">
               <span>3D data processing</span><span>Trilinear interpolation</span><span>F-factor modeling</span><span>Plotly</span><span>Matplotlib</span>
             </div>
-            <a class="project-link" href="https://github.com/DmitryZSer/Meteo_RLS" target="_blank" rel="noopener">View on GitHub →</a>
+            <a class="project-link" href="https://github.com/DmitryZSer/Meteo_RLS" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
           </div>
-          <div class="project-readout">
+          <div class="project-readout" data-i18n="projects.featured.readout">
             SRC: PWS binary arrays<br>
             OUT: radial velocity, RRF, F-factor<br>
             VIS: 3D cube slices · trajectories<br>
@@ -688,27 +724,27 @@
         </div>
 
         <div class="project-card" data-reveal>
-          <p class="project-tag">Full-Stack Web</p>
-          <h3>Content Management Platform</h3>
-          <p>What a "simple blog" actually needs once you add real users: roles, moderation, search that works, an admin who can undo mistakes. This one covers all of it.</p>
+          <p class="project-tag" data-i18n="projects.cms.tag">Full-Stack Web</p>
+          <h3 data-i18n="projects.cms.title">Content Management Platform</h3>
+          <p data-i18n="projects.cms.body">What a "simple blog" actually needs once you add real users: roles, moderation, search that works, an admin who can undo mistakes. This one covers all of it.</p>
           <div class="project-tags"><span>Auth</span><span>Search</span><span>Admin panel</span></div>
-          <a class="project-link" href="https://github.com/DmitryZSer/InfoBase" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/InfoBase" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
 
         <div class="project-card" data-reveal>
-          <p class="project-tag">Automation</p>
-          <h3>AI Terminal &amp; Telegram Assistant</h3>
-          <p>A test of how thin an integration layer can be: one core client, two completely different front doors, and no lock-in to a single model provider.</p>
+          <p class="project-tag" data-i18n="projects.ai.tag">Automation</p>
+          <h3 data-i18n="projects.ai.title">AI Terminal &amp; Telegram Assistant</h3>
+          <p data-i18n="projects.ai.body">A test of how thin an integration layer can be: one core client, two completely different front doors, and no lock-in to a single model provider.</p>
           <div class="project-tags"><span>Python</span><span>Telegram API</span><span>LLM integration</span></div>
-          <a class="project-link" href="https://github.com/DmitryZSer/AiChat-tg-terminal" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/AiChat-tg-terminal" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
 
         <div class="project-card" data-reveal>
-          <p class="project-tag">Networking</p>
-          <h3>Network Infrastructure Labs</h3>
-          <p>Before trusting a system to talk over a network, it helps to have built the network yourself — routing, address translation, access rules and all the ways a packet can get lost on the way.</p>
+          <p class="project-tag" data-i18n="projects.net.tag">Networking</p>
+          <h3 data-i18n="projects.net.title">Network Infrastructure Labs</h3>
+          <p data-i18n="projects.net.body">Before trusting a system to talk over a network, it helps to have built the network yourself — routing, address translation, access rules and all the ways a packet can get lost on the way.</p>
           <div class="project-tags"><span>VLAN</span><span>OSPF / EIGRP</span><span>NAT · ACL</span></div>
-          <a class="project-link" href="https://github.com/DmitryZSer/Computer-networks-CiscoPacketTracer" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/Computer-networks-CiscoPacketTracer" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
       </div>
     </div>
@@ -718,29 +754,29 @@
   <section id="build">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">WHAT I BUILD</p>
-        <h2>Outcomes, not tech lists</h2>
+        <p class="eyebrow center" data-i18n="build.eyebrow">WHAT I BUILD</p>
+        <h2 data-i18n="build.title">Outcomes, not tech lists</h2>
       </div>
       <div class="build-grid">
         <div class="build-card" data-reveal>
           <div class="icon">W</div>
-          <h3>Business Web Applications</h3>
+          <h3 data-i18n="build.1.title">Business Web Applications</h3>
           <ul>
-            <li>CRM</li><li>CMS</li><li>Admin panels</li><li>Dashboards</li><li>Authentication</li>
+            <li data-i18n="build.1.li1">CRM</li><li data-i18n="build.1.li2">CMS</li><li data-i18n="build.1.li3">Admin panels</li><li data-i18n="build.1.li4">Dashboards</li><li data-i18n="build.1.li5">Authentication</li>
           </ul>
         </div>
         <div class="build-card" data-reveal>
           <div class="icon">D</div>
-          <h3>Data Processing Systems</h3>
+          <h3 data-i18n="build.2.title">Data Processing Systems</h3>
           <ul>
-            <li>Scientific software</li><li>Analytics</li><li>Visualization</li><li>Large datasets</li><li>Numerical algorithms</li>
+            <li data-i18n="build.2.li1">Scientific software</li><li data-i18n="build.2.li2">Analytics</li><li data-i18n="build.2.li3">Visualization</li><li data-i18n="build.2.li4">Large datasets</li><li data-i18n="build.2.li5">Numerical algorithms</li>
           </ul>
         </div>
         <div class="build-card" data-reveal>
           <div class="icon">A</div>
-          <h3>Automation Tools</h3>
+          <h3 data-i18n="build.3.title">Automation Tools</h3>
           <ul>
-            <li>Telegram bots</li><li>Python scripts</li><li>API integrations</li><li>AI assistants</li>
+            <li data-i18n="build.3.li1">Telegram bots</li><li data-i18n="build.3.li2">Python scripts</li><li data-i18n="build.3.li3">API integrations</li><li data-i18n="build.3.li4">AI assistants</li>
           </ul>
         </div>
       </div>
@@ -751,15 +787,15 @@
   <section id="approach">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">ENGINEERING APPROACH</p>
-        <h2>How a project actually moves</h2>
+        <p class="eyebrow center" data-i18n="approach.eyebrow">ENGINEERING APPROACH</p>
+        <h2 data-i18n="approach.title">How a project actually moves</h2>
       </div>
       <div class="pipeline" data-reveal>
-        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num">STAGE 01</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4>Problem analysis</h4><p>Understand the domain and constraints before writing code.</p></div></div>
-        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num">STAGE 02</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4>Architecture</h4><p>Design data flow, schema, and API boundaries.</p></div></div>
-        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num">STAGE 03</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4>Implementation</h4><p>Build backend, frontend, and processing logic in parallel.</p></div></div>
-        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num">STAGE 04</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4>Testing</h4><p>Verify correctness at the module and integration level.</p></div></div>
-        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num">STAGE 05</div><div class="pipe-dot"></div></div><div class="pipe-text"><h4>Deployment</h4><p>Ship with containers and a repeatable release process.</p></div></div>
+        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num" data-i18n="approach.1.stage">STAGE 01</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4 data-i18n="approach.1.title">Problem analysis</h4><p data-i18n="approach.1.body">Understand the domain and constraints before writing code.</p></div></div>
+        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num" data-i18n="approach.2.stage">STAGE 02</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4 data-i18n="approach.2.title">Architecture</h4><p data-i18n="approach.2.body">Design data flow, schema, and API boundaries.</p></div></div>
+        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num" data-i18n="approach.3.stage">STAGE 03</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4 data-i18n="approach.3.title">Implementation</h4><p data-i18n="approach.3.body">Build backend, frontend, and processing logic in parallel.</p></div></div>
+        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num" data-i18n="approach.4.stage">STAGE 04</div><div class="pipe-dot"></div><div class="pipe-line"></div></div><div class="pipe-text"><h4 data-i18n="approach.4.title">Testing</h4><p data-i18n="approach.4.body">Verify correctness at the module and integration level.</p></div></div>
+        <div class="pipe-step"><div class="pipe-marker"><div class="pipe-num" data-i18n="approach.5.stage">STAGE 05</div><div class="pipe-dot"></div></div><div class="pipe-text"><h4 data-i18n="approach.5.title">Deployment</h4><p data-i18n="approach.5.body">Ship with containers and a repeatable release process.</p></div></div>
       </div>
     </div>
   </section>
@@ -768,37 +804,37 @@
   <section id="research">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">RESEARCH &amp; LEARNING</p>
-        <h2>Study projects</h2>
+        <p class="eyebrow center" data-i18n="research.eyebrow">RESEARCH &amp; LEARNING</p>
+        <h2 data-i18n="research.title">Study projects</h2>
       </div>
       <div class="research-card" data-reveal>
         <div>
-          <h4>Linear Regression — Applied ML Coursework</h4>
-          <p>Practical exercises and assignments written for a "Python for Marketing Analytics" course, covering data preparation and regression modeling.</p>
+          <h4 data-i18n="research.1.title">Linear Regression — Applied ML Coursework</h4>
+          <p data-i18n="research.1.body">Practical exercises and assignments written for a "Python for Marketing Analytics" course, covering data preparation and regression modeling.</p>
         </div>
         <div class="research-meta">
           <p class="research-tag">scikit-learn · Python</p>
-          <a class="project-link" href="https://github.com/DmitryZSer/LinearRegression-Sklearn" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/LinearRegression-Sklearn" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
       </div>
       <div class="research-card" data-reveal>
         <div>
-          <h4>Real Estate Information System — Windows Forms &amp; SQLite</h4>
-          <p>Desktop app for managing deals, employees and property records with a generic SQLite data-access layer, password hashing, input validation, and role-based access — an admin panel for CRUD operations versus search-only access for regular users.</p>
+          <h4 data-i18n="research.2.title">Real Estate Information System — Windows Forms &amp; SQLite</h4>
+          <p data-i18n="research.2.body">Desktop app for managing deals, employees and property records with a generic SQLite data-access layer, password hashing, input validation, and role-based access — an admin panel for CRUD operations versus search-only access for regular users.</p>
         </div>
         <div class="research-meta">
           <p class="research-tag">C# · Windows Forms · SQLite</p>
-          <a class="project-link" href="https://github.com/DmitryZSer/Real_Estate_WindowsForms_SQLite" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/Real_Estate_WindowsForms_SQLite" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
       </div>
       <div class="research-card" data-reveal>
         <div>
-          <h4>Unity Clicker</h4>
-          <p>A clicker game where score comes from defeating enemies across scaling levels, with achievements, pause, per-enemy animations, level-based locations and sound design, and a settings menu for muting audio and resetting progress.</p>
+          <h4 data-i18n="research.3.title">Unity Clicker</h4>
+          <p data-i18n="research.3.body">A clicker game where score comes from defeating enemies across scaling levels, with achievements, pause, per-enemy animations, level-based locations and sound design, and a settings menu for muting audio and resetting progress.</p>
         </div>
         <div class="research-meta">
           <p class="research-tag">Unity · C#</p>
-          <a class="project-link" href="https://github.com/DmitryZSer/Clicker-Unity" target="_blank" rel="noopener">View on GitHub →</a>
+          <a class="project-link" href="https://github.com/DmitryZSer/Clicker-Unity" target="_blank" rel="noopener" data-i18n="projects.link">View on GitHub →</a>
         </div>
       </div>
     </div>
@@ -808,25 +844,25 @@
   <section id="stack">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow center">TECH STACK</p>
-        <h2>Tools of the trade</h2>
+        <p class="eyebrow center" data-i18n="stack.eyebrow">TECH STACK</p>
+        <h2 data-i18n="stack.title">Tools of the trade</h2>
       </div>
       <div class="stack-groups" data-reveal>
         <div class="stack-group">
-          <h4>Languages</h4>
+          <h4 data-i18n="stack.1.title">Languages</h4>
           <div class="stack-pills"><span>Python</span><span>JavaScript / TypeScript</span><span>SQL</span></div>
         </div>
         <div class="stack-group">
-          <h4>Web &amp; Backend</h4>
+          <h4 data-i18n="stack.2.title">Web &amp; Backend</h4>
           <div class="stack-pills"><span>React</span><span>FastAPI</span><span>REST APIs</span><span>PostgreSQL</span></div>
         </div>
         <div class="stack-group">
-          <h4>Data &amp; ML</h4>
+          <h4 data-i18n="stack.3.title">Data &amp; ML</h4>
           <div class="stack-pills"><span>NumPy</span><span>Pandas</span><span>scikit-learn</span><span>Matplotlib</span><span>Plotly</span></div>
         </div>
         <div class="stack-group">
-          <h4>Infrastructure &amp; Networking</h4>
-          <div class="stack-pills"><span>Docker</span><span>Git</span><span title="daily driver since forever, no dual-boot regrets">Ubuntu / Linux</span><span>VLAN / OSPF / EIGRP</span><span>NAT / ACL</span></div>
+          <h4 data-i18n="stack.4.title">Infrastructure &amp; Networking</h4>
+          <div class="stack-pills"><span>Docker</span><span>Git</span><span title="daily driver since forever, no dual-boot regrets" data-i18n-title="stack.4.ubuntuTitle">Ubuntu / Linux</span><span>VLAN / OSPF / EIGRP</span><span>NAT / ACL</span></div>
         </div>
       </div>
     </div>
@@ -836,17 +872,17 @@
   <section id="contact">
     <div class="wrap">
       <div class="contact-panel" data-reveal>
-        <p class="eyebrow center">GET IN TOUCH</p>
-        <h2>Let's build something reliable.</h2>
-        <p>Open to full-stack, data-engineering, and automation contract work. Email is the most reliable way to reach me — GitHub is where the code lives.</p>
+        <p class="eyebrow center" data-i18n="contact.eyebrow">GET IN TOUCH</p>
+        <h2 data-i18n="contact.title">Let's build something reliable.</h2>
+        <p data-i18n="contact.body">Open to full-stack, data-engineering, and automation contract work. Email is the most reliable way to reach me — GitHub is where the code lives.</p>
         <div class="contact-actions">
           <a href="mailto:zhuravskiy.work@gmail.com" class="btn btn-primary">zhuravskiy.work@gmail.com</a>
-          <a href="https://github.com/DmitryZSer" target="_blank" rel="noopener" class="btn btn-ghost">GitHub Profile</a>
+          <a href="https://github.com/DmitryZSer" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="contact.github">GitHub Profile</a>
           <a href="https://www.linkedin.com/in/dmitry-zhuravskiy-6252a9425" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
           <a href="https://t.me/nikakoi_originalnosti_work" target="_blank" rel="noopener" class="btn btn-ghost">Telegram</a>
         </div>
         <div class="contact-actions" style="margin-top:14px;">
-          <a href="#top" class="btn btn-ghost" style="font-size:0.74rem; padding:10px 20px;">Back to top ↑</a>
+          <a href="#top" class="btn btn-ghost" style="font-size:0.74rem; padding:10px 20px;" data-i18n="contact.backToTop">Back to top ↑</a>
         </div>
       </div>
     </div>
@@ -855,7 +891,7 @@
 </main>
 
 <footer>
-  © <span id="current-year"></span> DmitryZSer — SOFTWARE ENGINEERING · BUILT WITH <i>Love & a lot of tea</i>
+  © <span id="current-year"></span> DmitryZSer — <span data-i18n="footer.text">SOFTWARE ENGINEERING · BUILT WITH <i>Love &amp; a lot of tea</i></span>
 </footer>
 
 <script>
@@ -871,13 +907,14 @@
     function apply(){
       if(theme === 'light'){
         document.documentElement.setAttribute('data-theme', 'light');
-        icon.textContent = '☀';
+        icon.textContent = '☾';
         btn.setAttribute('aria-label', 'Switch to dark theme');
       } else {
         document.documentElement.removeAttribute('data-theme');
-        icon.textContent = '☾';
+        icon.textContent = '☀';
         btn.setAttribute('aria-label', 'Switch to light theme');
       }
+      if(window.i18nUpdateThemeLabel){ window.i18nUpdateThemeLabel(theme); }
     }
     btn.addEventListener('click', () => {
       theme = theme === 'light' ? 'dark' : 'light';
@@ -911,20 +948,37 @@
     const el = document.getElementById('termBody');
     if(!el) return;
 
-    const lines = [
-      { cmd: 'whoami', out: 'DmitryZSer — full-stack / data / automation engineer' },
-      { cmd: 'cat /etc/os-release | grep PRETTY', out: 'PRETTY_NAME="Ubuntu 26.04 LTS"' },
-      { cmd: 'uname -a', out: 'Linux 7.0.0-27-generic x86_64 GNU/Linux' },
-      { cmd: 'sudo apt update && sudo apt upgrade -y', out: 'reading state information... done. (creature of habit)' },
-      { cmd: 'ping windows.local', out: 'Destination Host Unreachable — uninstalled since 2024' },
-      { cmd: 'git commit -m "it works on my machine"', out: '[main] 1 file changed, 0 regrets' },
-      { cmd: 'echo $STATUS', out: 'online · tea & sleep: required' }
-    ];
+    const linesByLang = {
+      en: [
+        { cmd: 'whoami', out: 'DmitryZSer — full-stack / data / automation engineer' },
+        { cmd: 'cat /etc/os-release | grep PRETTY', out: 'PRETTY_NAME="Ubuntu 26.04 LTS"' },
+        { cmd: 'uname -a', out: 'Linux 7.0.0-27-generic x86_64 GNU/Linux' },
+        { cmd: 'sudo apt update && sudo apt upgrade -y', out: 'reading state information... done. (creature of habit)' },
+        { cmd: 'ping windows.local', out: 'Destination Host Unreachable — uninstalled since 2024' },
+        { cmd: 'git commit -m "it works on my machine"', out: '[main] 1 file changed, 0 regrets' },
+        { cmd: 'echo $STATUS', out: 'online · tea & sleep: required' }
+      ],
+      ru: [
+        { cmd: 'whoami', out: 'DmitryZSer — инженер full-stack / данные / автоматизация' },
+        { cmd: 'cat /etc/os-release | grep PRETTY', out: 'PRETTY_NAME="Ubuntu 26.04 LTS"' },
+        { cmd: 'uname -a', out: 'Linux 7.0.0-27-generic x86_64 GNU/Linux' },
+        { cmd: 'sudo apt update && sudo apt upgrade -y', out: 'чтение информации о состоянии... готово. (дело привычки)' },
+        { cmd: 'ping windows.local', out: 'Хост недоступен — удалён ещё в 2024-м' },
+        { cmd: 'git commit -m "it works on my machine"', out: '[main] 1 файл изменён, 0 сожалений' },
+        { cmd: 'echo $STATUS', out: 'онлайн · чай и сон: обязательны' }
+      ]
+    };
 
     let li = 0;
+    let currentLang = 'en';
+    let typer = null;
+    let lineTimeout = null;
+    let genToken = 0;
     const cursor = '<span class="term-cursor"></span>';
 
-    function typeLine(){
+    function typeLine(token){
+      if(token !== genToken) return;
+      const lines = linesByLang[currentLang] || linesByLang.en;
       const line = lines[li % lines.length];
       let ci = 0;
       el.innerHTML = '';
@@ -939,31 +993,277 @@
         outSpan.textContent = line.out;
         el.appendChild(outSpan);
         li++;
-        setTimeout(typeLine, 2600);
+        lineTimeout = setTimeout(() => typeLine(token), 2600);
         return;
       }
 
-      const typer = setInterval(() => {
+      typer = setInterval(() => {
         ci++;
         promptSpan.innerHTML = '<span style="color:var(--amber)">$</span> ' + line.cmd.slice(0, ci) + cursor;
         if(ci >= line.cmd.length){
           clearInterval(typer);
           promptSpan.innerHTML = '<span style="color:var(--amber)">$</span> ' + line.cmd;
-          setTimeout(() => {
+          lineTimeout = setTimeout(() => {
+            if(token !== genToken) return;
             const outSpan = document.createElement('div');
             outSpan.className = 'term-out';
             outSpan.textContent = line.out;
             el.appendChild(outSpan);
             li++;
-            setTimeout(typeLine, 2200);
+            lineTimeout = setTimeout(() => typeLine(token), 2200);
           }, 260);
         }
       }, 34);
     }
-    typeLine();
+
+    window.setTerminalLanguage = function(lang){
+      currentLang = linesByLang[lang] ? lang : 'en';
+      li = 0;
+      genToken++;
+      if(typer) clearInterval(typer);
+      if(lineTimeout) clearTimeout(lineTimeout);
+      typeLine(genToken);
+    };
+
+    typeLine(genToken);
   })();
 
+  /* ============ LANGUAGE TOGGLE / TRANSLATION ============ */
+  (function i18n(){
+    const translations = {
+      'nav.expertise': { en: 'Expertise', ru: 'Компетенции' },
+      'nav.projects': { en: 'Projects', ru: 'Проекты' },
+      'nav.approach': { en: 'Approach', ru: 'Подход' },
+      'nav.stack': { en: 'Stack', ru: 'Стек' },
+      'nav.contact': { en: 'Contact', ru: 'Контакты' },
 
+      'hero.eyebrow': { en: 'SOFTWARE ENGINEER — FULL-STACK &amp; DATA SYSTEMS', ru: 'ИНЖЕНЕР-ПРОГРАММИСТ — FULL-STACK И DATA SYSTEMS' },
+      'hero.title': { en: 'Building reliable software for <span class="accent">data-intensive</span> and business-critical applications.', ru: 'Создаю надёжное ПО для <span class="accent">data-интенсивных</span> и критически важных для бизнеса приложений.' },
+      'hero.sub': { en: "I like taking a problem apart until it's just data flowing through a system, then building whatever gets it from A to B reliably — a web platform, a processing pipeline, an automation layer. The projects below are examples of that habit, not the limit of it.", ru: 'Мне нравится разбирать задачу на части, пока не останется просто поток данных через систему, а затем строить то, что надёжно доставит их из точки А в точку Б — веб-платформу, конвейер обработки или слой автоматизации. Проекты ниже — примеры такого подхода, а не предел возможностей.' },
+      'hero.viewProjects': { en: 'View Projects', ru: 'Смотреть проекты' },
+      'hero.getInTouch': { en: 'Get in Touch', ru: 'Связаться' },
+
+      'expertise.eyebrow': { en: 'CORE EXPERTISE', ru: 'КЛЮЧЕВЫЕ КОМПЕТЕНЦИИ' },
+      'expertise.title': { en: 'Three disciplines, one engineer.', ru: 'Три направления, один инженер.' },
+      'expertise.sub': { en: 'Most portfolios show one skill wrapped in different projects. Mine shows three — full-stack delivery, scientific data processing, and automation — because that combination is what actually gets used on real engineering teams.', ru: 'Большинство портфолио показывают один навык, обёрнутый в разные проекты. Моё показывает три — full-stack разработку, научную обработку данных и автоматизацию — потому что именно такое сочетание реально используется в инженерных командах.' },
+
+      'expertise.1.index': { en: '01 · FULL-STACK WEB', ru: '01 · FULL-STACK ВЕБ-РАЗРАБОТКА' },
+      'expertise.1.title': { en: 'Full-Stack Web Development', ru: 'Full-Stack веб-разработка' },
+      'expertise.1.body': { en: 'Comfortable owning a web product end to end — schema, API, auth, admin surface, the interface people actually click through. Less interested in the trendiest framework, more in whether the thing holds up once real users and real edge cases show up. <em style="color:var(--text-faint); font-style:normal;">Example: a publishing platform with search, roles and moderation, built from scratch.</em>', ru: 'Спокойно беру на себя веб-продукт целиком — схему БД, API, авторизацию, админ-панель, интерфейс, с которым реально работают люди. Меньше интересует модный фреймворк, больше — выдержит ли всё это реальных пользователей и пограничные случаи. <em style="color:var(--text-faint); font-style:normal;">Пример: платформа публикаций с поиском, ролями и модерацией, написанная с нуля.</em>' },
+      'expertise.1.li1': { en: 'Authentication &amp; Authorization', ru: 'Аутентификация и авторизация' },
+      'expertise.1.li2': { en: 'Admin panels', ru: 'Админ-панели' },
+      'expertise.1.li3': { en: 'REST APIs', ru: 'REST API' },
+      'expertise.1.li4': { en: 'Rich text editors', ru: 'Редакторы форматированного текста' },
+      'expertise.1.li5': { en: 'Search systems', ru: 'Системы поиска' },
+      'expertise.1.li6': { en: 'Role-based access', ru: 'Ролевой доступ' },
+      'expertise.1.li7': { en: 'Database design', ru: 'Проектирование БД' },
+      'expertise.1.li8': { en: 'Responsive UI', ru: 'Адаптивный интерфейс' },
+
+      'expertise.2.index': { en: '02 · DATA &amp; SCIENTIFIC COMPUTING', ru: '02 · ДАННЫЕ И НАУЧНЫЕ ВЫЧИСЛЕНИЯ' },
+      'expertise.2.title': { en: 'Data Processing &amp; Scientific Computing', ru: 'Обработка данных и научные вычисления' },
+      'expertise.2.body': { en: "Comfortable with data once it stops looking like a spreadsheet — multi-dimensional arrays, custom numerical algorithms, the kind of visualization that has to earn someone's trust before they act on it. <em style=\"color:var(--text-faint); font-style:normal;\">Example: a thesis project decoding raw weather-radar volumes into turbulence and wind-shear warnings for aviation.</em>", ru: 'Уверенно работаю с данными, когда они перестают напоминать таблицу — многомерные массивы, собственные численные алгоритмы, визуализация, которой действительно можно доверять перед принятием решения. <em style="color:var(--text-faint); font-style:normal;">Пример: дипломный проект по декодированию сырых объёмов метеорадара в предупреждения о турбулентности и сдвиге ветра для авиации.</em>' },
+      'expertise.2.li1': { en: 'Processing 3D radar datasets', ru: 'Обработка 3D-данных радара' },
+      'expertise.2.li2': { en: 'Scientific algorithms', ru: 'Научные алгоритмы' },
+      'expertise.2.li3': { en: 'Trilinear interpolation', ru: 'Трилинейная интерполяция' },
+      'expertise.2.li4': { en: 'Wind shear analysis', ru: 'Анализ сдвига ветра' },
+      'expertise.2.li5': { en: 'Data visualization', ru: 'Визуализация данных' },
+      'expertise.2.li6': { en: 'Plotly &amp; Matplotlib', ru: 'Plotly и Matplotlib' },
+      'expertise.2.li7': { en: 'Numerical computing', ru: 'Численные вычисления' },
+      'expertise.2.li8': { en: 'F-factor / RRF modeling', ru: 'Моделирование F-фактора / RRF' },
+
+      'expertise.3.index': { en: '03 · AUTOMATION &amp; AI INTEGRATIONS', ru: '03 · АВТОМАТИЗАЦИЯ И ИНТЕГРАЦИИ ИИ' },
+      'expertise.3.title': { en: 'Automation &amp; AI Integrations', ru: 'Автоматизация и интеграции ИИ' },
+      'expertise.3.body': { en: 'Treating AI as a component to wire into a system, not a chat window to marvel at — provider-agnostic, swappable, and boring in the way infrastructure should be boring. <em style="color:var(--text-faint); font-style:normal;">Example: one bot logic running identically over a terminal and Telegram.</em>', ru: 'Отношусь к ИИ как к компоненту, который встраивается в систему, а не как к окну чата, которым любуются — независимо от провайдера, легко заменяемому и скучному так, как и должна быть скучной инфраструктура. <em style="color:var(--text-faint); font-style:normal;">Пример: одна и та же логика бота одинаково работает и в терминале, и в Telegram.</em>' },
+      'expertise.3.li1': { en: 'Multi-provider AI client', ru: 'Клиент ИИ с поддержкой нескольких провайдеров' },
+      'expertise.3.li2': { en: 'Telegram integration', ru: 'Интеграция с Telegram' },
+      'expertise.3.li3': { en: 'Console interface', ru: 'Консольный интерфейс' },
+      'expertise.3.li4': { en: 'OpenAI-compatible APIs', ru: 'API, совместимые с OpenAI' },
+      'expertise.3.li5': { en: 'Streaming responses', ru: 'Потоковые ответы' },
+      'expertise.3.li6': { en: 'Provider abstraction', ru: 'Абстракция провайдера' },
+
+      'projects.eyebrow': { en: 'FEATURED PROJECTS', ru: 'ИЗБРАННЫЕ ПРОЕКТЫ' },
+      'projects.title': { en: 'Selected work', ru: 'Избранные работы' },
+      'projects.sub': { en: 'Four projects, four different problems — research-grade signal processing, a production content platform, an AI integration layer, and network infrastructure.', ru: 'Четыре проекта, четыре разные задачи — обработка сигналов на уровне научного исследования, продакшн-платформа для контента, слой интеграции ИИ и сетевая инфраструктура.' },
+      'projects.link': { en: 'View on GitHub →', ru: 'Смотреть на GitHub →' },
+
+      'projects.featured.tag': { en: 'Research &amp; Engineering', ru: 'Исследования и инжиниринг' },
+      'projects.featured.title': { en: 'Meteorological Radar Analysis System', ru: 'Система анализа метеорологического радара' },
+      'projects.featured.body': { en: 'The project that best shows how I approach a hard data problem: take a domain nobody hands you a tutorial for, read the papers, then write the pipeline that turns a raw 3D signal into something a pilot can actually trust. Built as a thesis project for AO "Navigator", aimed at flagging turbulence and wind shear earlier.', ru: 'Проект, который лучше всего показывает мой подход к сложной задаче с данными: взять область, по которой никто не даст готовый учебник, прочитать статьи, а затем написать конвейер, превращающий сырой 3D-сигнал в то, чему пилот действительно может доверять. Выполнен как дипломный проект для АО «Навигатор» с целью более раннего обнаружения турбулентности и сдвига ветра.' },
+      'projects.featured.readout': { en: 'SRC: PWS binary arrays<br>OUT: radial velocity, RRF, F-factor<br>VIS: 3D cube slices · trajectories<br>QA: module-level test coverage', ru: 'ИСТОЧНИК: бинарные массивы PWS<br>РЕЗУЛЬТАТ: радиальная скорость, RRF, F-фактор<br>ВИЗУАЛИЗАЦИЯ: срезы 3D-куба · траектории<br>QA: модульное тестовое покрытие' },
+
+      'projects.cms.tag': { en: 'Full-Stack Web', ru: 'Full-Stack веб' },
+      'projects.cms.title': { en: 'Content Management Platform', ru: 'Платформа управления контентом' },
+      'projects.cms.body': { en: 'What a "simple blog" actually needs once you add real users: roles, moderation, search that works, an admin who can undo mistakes. This one covers all of it.', ru: '«Простому блогу» на самом деле нужно, как только появляются реальные пользователи: роли, модерация, работающий поиск, админ, способный отменить ошибку. Здесь есть всё это.' },
+
+      'projects.ai.tag': { en: 'Automation', ru: 'Автоматизация' },
+      'projects.ai.title': { en: 'AI Terminal &amp; Telegram Assistant', ru: 'ИИ-ассистент для терминала и Telegram' },
+      'projects.ai.body': { en: 'A test of how thin an integration layer can be: one core client, two completely different front doors, and no lock-in to a single model provider.', ru: 'Проверка того, насколько тонким может быть слой интеграции: один основной клиент, два совершенно разных интерфейса и никакой привязки к одному провайдеру модели.' },
+
+      'projects.net.tag': { en: 'Networking', ru: 'Сети' },
+      'projects.net.title': { en: 'Network Infrastructure Labs', ru: 'Лабораторные работы по сетевой инфраструктуре' },
+      'projects.net.body': { en: 'Before trusting a system to talk over a network, it helps to have built the network yourself — routing, address translation, access rules and all the ways a packet can get lost on the way.', ru: 'Прежде чем доверить системе общение по сети, полезно построить эту сеть самому — маршрутизация, трансляция адресов, правила доступа и все способы, которыми пакет может потеряться по пути.' },
+
+      'build.eyebrow': { en: 'WHAT I BUILD', ru: 'ЧТО Я СОЗДАЮ' },
+      'build.title': { en: 'Outcomes, not tech lists', ru: 'Результат, а не список технологий' },
+      'build.1.title': { en: 'Business Web Applications', ru: 'Бизнес веб-приложения' },
+      'build.1.li1': { en: 'CRM', ru: 'CRM' },
+      'build.1.li2': { en: 'CMS', ru: 'CMS' },
+      'build.1.li3': { en: 'Admin panels', ru: 'Админ-панели' },
+      'build.1.li4': { en: 'Dashboards', ru: 'Дашборды' },
+      'build.1.li5': { en: 'Authentication', ru: 'Аутентификация' },
+      'build.2.title': { en: 'Data Processing Systems', ru: 'Системы обработки данных' },
+      'build.2.li1': { en: 'Scientific software', ru: 'Научное ПО' },
+      'build.2.li2': { en: 'Analytics', ru: 'Аналитика' },
+      'build.2.li3': { en: 'Visualization', ru: 'Визуализация' },
+      'build.2.li4': { en: 'Large datasets', ru: 'Большие наборы данных' },
+      'build.2.li5': { en: 'Numerical algorithms', ru: 'Численные алгоритмы' },
+      'build.3.title': { en: 'Automation Tools', ru: 'Инструменты автоматизации' },
+      'build.3.li1': { en: 'Telegram bots', ru: 'Telegram-боты' },
+      'build.3.li2': { en: 'Python scripts', ru: 'Python-скрипты' },
+      'build.3.li3': { en: 'API integrations', ru: 'Интеграции API' },
+      'build.3.li4': { en: 'AI assistants', ru: 'ИИ-ассистенты' },
+
+      'approach.eyebrow': { en: 'ENGINEERING APPROACH', ru: 'ИНЖЕНЕРНЫЙ ПОДХОД' },
+      'approach.title': { en: 'How a project actually moves', ru: 'Как на самом деле движется проект' },
+      'approach.1.stage': { en: 'STAGE 01', ru: 'ЭТАП 01' },
+      'approach.1.title': { en: 'Problem analysis', ru: 'Анализ задачи' },
+      'approach.1.body': { en: 'Understand the domain and constraints before writing code.', ru: 'Разобраться в предметной области и ограничениях до написания кода.' },
+      'approach.2.stage': { en: 'STAGE 02', ru: 'ЭТАП 02' },
+      'approach.2.title': { en: 'Architecture', ru: 'Архитектура' },
+      'approach.2.body': { en: 'Design data flow, schema, and API boundaries.', ru: 'Спроектировать поток данных, схему и границы API.' },
+      'approach.3.stage': { en: 'STAGE 03', ru: 'ЭТАП 03' },
+      'approach.3.title': { en: 'Implementation', ru: 'Реализация' },
+      'approach.3.body': { en: 'Build backend, frontend, and processing logic in parallel.', ru: 'Параллельно разрабатывать бэкенд, фронтенд и логику обработки.' },
+      'approach.4.stage': { en: 'STAGE 04', ru: 'ЭТАП 04' },
+      'approach.4.title': { en: 'Testing', ru: 'Тестирование' },
+      'approach.4.body': { en: 'Verify correctness at the module and integration level.', ru: 'Проверить корректность на уровне модулей и интеграции.' },
+      'approach.5.stage': { en: 'STAGE 05', ru: 'ЭТАП 05' },
+      'approach.5.title': { en: 'Deployment', ru: 'Развёртывание' },
+      'approach.5.body': { en: 'Ship with containers and a repeatable release process.', ru: 'Выкатывать через контейнеры и повторяемый процесс релиза.' },
+
+      'research.eyebrow': { en: 'RESEARCH &amp; LEARNING', ru: 'ИССЛЕДОВАНИЯ И ОБУЧЕНИЕ' },
+      'research.title': { en: 'Study projects', ru: 'Учебные проекты' },
+      'research.1.title': { en: 'Linear Regression — Applied ML Coursework', ru: 'Линейная регрессия — прикладной курс по ML' },
+      'research.1.body': { en: 'Practical exercises and assignments written for a "Python for Marketing Analytics" course, covering data preparation and regression modeling.', ru: 'Практические упражнения и задания, написанные для курса «Python для маркетинговой аналитики», охватывающие подготовку данных и регрессионное моделирование.' },
+      'research.2.title': { en: 'Real Estate Information System — Windows Forms &amp; SQLite', ru: 'Информационная система недвижимости — Windows Forms и SQLite' },
+      'research.2.body': { en: 'Desktop app for managing deals, employees and property records with a generic SQLite data-access layer, password hashing, input validation, and role-based access — an admin panel for CRUD operations versus search-only access for regular users.', ru: 'Настольное приложение для управления сделками, сотрудниками и объектами недвижимости с универсальным слоем доступа к SQLite, хешированием паролей, валидацией ввода и ролевым доступом — админ-панель для CRUD-операций против доступа только для поиска у обычных пользователей.' },
+      'research.3.title': { en: 'Unity Clicker', ru: 'Unity-кликер' },
+      'research.3.body': { en: 'A clicker game where score comes from defeating enemies across scaling levels, with achievements, pause, per-enemy animations, level-based locations and sound design, and a settings menu for muting audio and resetting progress.', ru: 'Кликер, где очки начисляются за победу над врагами на усложняющихся уровнях, с достижениями, паузой, анимациями для каждого врага, локациями по уровням, звуковым оформлением и меню настроек для отключения звука и сброса прогресса.' },
+
+      'stack.eyebrow': { en: 'TECH STACK', ru: 'ТЕХНОЛОГИЧЕСКИЙ СТЕК' },
+      'stack.title': { en: 'Tools of the trade', ru: 'Инструменты ремесла' },
+      'stack.1.title': { en: 'Languages', ru: 'Языки' },
+      'stack.2.title': { en: 'Web &amp; Backend', ru: 'Web и бэкенд' },
+      'stack.3.title': { en: 'Data &amp; ML', ru: 'Данные и ML' },
+      'stack.4.title': { en: 'Infrastructure &amp; Networking', ru: 'Инфраструктура и сети' },
+
+      'contact.eyebrow': { en: 'GET IN TOUCH', ru: 'СВЯЗАТЬСЯ' },
+      'contact.title': { en: "Let's build something reliable.", ru: 'Давайте построим что-то надёжное.' },
+      'contact.body': { en: 'Open to full-stack, data-engineering, and automation contract work. Email is the most reliable way to reach me — GitHub is where the code lives.', ru: 'Открыт к контрактной работе по full-stack, data-инжинирингу и автоматизации. Email — самый надёжный способ со мной связаться, GitHub — там, где живёт код.' },
+      'contact.github': { en: 'GitHub Profile', ru: 'Профиль GitHub' },
+      'contact.backToTop': { en: 'Back to top ↑', ru: 'Наверх ↑' },
+
+      'footer.text': { en: 'SOFTWARE ENGINEERING · BUILT WITH <i>Love &amp; a lot of tea</i>', ru: 'ИНЖЕНЕРНАЯ РАЗРАБОТКА · СДЕЛАНО С <i>любовью и большим количеством чая</i>' }
+    };
+
+    const titles = {
+      en: 'DmitryZSer — Software Engineer / Full-Stack &amp; Data Systems',
+      ru: 'DmitryZSer — Инженер-программист / Full-Stack и Data Systems'
+    };
+    const ubuntuTitles = {
+      en: 'daily driver, dual-boot idle',
+      ru: 'основная система, дуал-бут простаивает'
+    };
+    const themeToggleLabels = {
+      light: { en: 'Switch to light theme', ru: 'Переключить на светлую тему' },
+      dark: { en: 'Switch to dark theme', ru: 'Переключить на тёмную тему' }
+    };
+
+    const langBtn = document.getElementById('langToggle');
+    const langLabel = document.getElementById('langToggleLabel');
+    if(!langBtn) return;
+
+    let currentLang = 'en';
+    try {
+      const saved = localStorage.getItem('site-lang');
+      if(saved === 'en' || saved === 'ru'){
+        currentLang = saved;
+      } else {
+    const browserLang =
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        "en";
+
+    currentLang = browserLang.toLowerCase().startsWith("ru")
+        ? "ru"
+        : "en";
+}
+    } catch(e){ /* localStorage unavailable — default to en */ }
+
+    function decodeEntities(str){
+      const ta = document.createElement('textarea');
+      ta.innerHTML = str;
+      return ta.value;
+    }
+
+    function apply(lang){
+      document.documentElement.setAttribute('lang', lang);
+      document.title = decodeEntities(titles[lang]);
+      langLabel.textContent = lang === 'en' ? 'RU' : 'EN';
+      langBtn.setAttribute('aria-label', lang === 'en' ? 'Переключить язык на русский' : 'Switch language to English');
+      langBtn.setAttribute('title', lang === 'en' ? 'Переключить язык на русский' : 'Switch language to English');
+
+      document.querySelectorAll('[data-i18n]').forEach(node => {
+        const key = node.getAttribute('data-i18n');
+        const entry = translations[key];
+        if(entry){ node.innerHTML = entry[lang]; }
+      });
+
+      const ubuntuPill = document.querySelector('[data-i18n-title="stack.4.ubuntuTitle"]');
+      if(ubuntuPill){ ubuntuPill.setAttribute('title', ubuntuTitles[lang]); }
+
+      const themeBtn = document.getElementById('themeToggle');
+      if(themeBtn){
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const state = isLight ? 'dark' : 'light';
+        themeBtn.setAttribute('aria-label', themeToggleLabels[state][lang]);
+        themeBtn.setAttribute('title', 'Switch theme');
+      }
+
+      if(window.setTerminalLanguage){ window.setTerminalLanguage(lang); }
+    }
+
+    window.i18nUpdateThemeLabel = function(theme){
+      const themeBtn = document.getElementById('themeToggle');
+      if(!themeBtn) return;
+      const nextState = theme === 'light' ? 'dark' : 'light';
+      themeBtn.setAttribute('aria-label', themeToggleLabels[nextState][currentLang]);
+    };
+
+    langBtn.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'ru' : 'en';
+      try { localStorage.setItem('site-lang', currentLang); } catch(e){}
+      apply(currentLang);
+    });
+
+    apply(currentLang);
+  })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        if (prefersDarkScheme.matches) {
+            document.body.classList.add('dark-theme');
+            themeToggle.classList.add('dark-theme');
+        } else {
+            document.body.classList.add('light-theme');
+            themeToggle.classList.add('light-theme');
+        }
+        
+        themeToggle.style.animationIterationCount = '3';
+    });
 
 
   /* ============ EASTER EGGS ============ */
@@ -997,8 +1297,6 @@
     closeBtn.addEventListener('click', closeTerminal);
   }
 
-  // Опционально: функция для разворачивания терминала (если нужно)
-  // Можно привязать к какой-то кнопке на странице
   window.expandTerminal = function() {
     if (terminal) {
       terminal.classList.remove('minimized');
@@ -1043,23 +1341,5 @@
 })();
 </script>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const themeToggle = document.getElementById('themeToggle');
-        
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        
-        if (prefersDarkScheme.matches) {
-            document.body.classList.add('dark-theme');
-            themeToggle.classList.add('dark-theme');
-        } else {
-            document.body.classList.add('light-theme');
-            themeToggle.classList.add('light-theme');
-        }
-        
-        themeToggle.style.animationIterationCount = '3';
-    });
-</script>
 </body>
 </html>
