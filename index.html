@@ -10,26 +10,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
- <!-- Скрипт для определения темы и языка ДО загрузки контента -->
+ <!-- Тема определяется ДО отрисовки контента, чтобы избежать мигания (FOUC).
+      Ручной выбор пользователя (localStorage) имеет приоритет над системной темой браузера. -->
     <script>
-        (function() {
-            // 1. Определение темы
-            const userPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = userPrefersDark ? 'dark' : 'light';
-            
-            // 2. Определение языка
-            // Берем первый язык из настроек браузера или используем 'ru' по умолчанию
-            const lang = navigator.language || navigator.userLanguage || 'ru';
-            const shortLang = lang.split('-')[0]; // Получаем 'ru', 'en', 'de' и т.д.
+        (function initTheme(){
+            var stored = null;
+            try { stored = localStorage.getItem('theme'); } catch(e) { /* localStorage недоступен */ }
 
-            // Применяем атрибуты к html элементу немедленно
-            document.documentElement.setAttribute('data-theme', theme);
-            document.documentElement.setAttribute('lang', shortLang);
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var theme = stored || (prefersDark ? 'dark' : 'light');
 
-            // Опционально: сохранение выбора в localStorage, если пользователь менял его вручную ранее
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
+            if(theme === 'light'){
+                document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
     </script>
@@ -899,28 +891,52 @@
 </script>
 
 <script>
-  // theme toggle (light/dark) — kept in memory only, resets on reload
+  // Theme toggle (light/dark). Initial state comes from the pre-paint script in <head>
+  // (data-theme attribute) — this block only handles switching + persisting the choice.
   (function themeToggle(){
     const btn = document.getElementById('themeToggle');
+    if(!btn) return;
     const icon = btn.querySelector('.theme-toggle-icon');
-    let theme = 'dark';
-    function apply(){
-      if(theme === 'light'){
-        document.documentElement.setAttribute('data-theme', 'light');
-        icon.textContent = '☾';
-        btn.setAttribute('aria-label', 'Switch to dark theme');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        icon.textContent = '☀';
-        btn.setAttribute('aria-label', 'Switch to light theme');
-      }
+
+    function currentTheme(){
+      return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    }
+
+    function render(theme){
+      icon.textContent = theme === 'light' ? '☾' : '☀';
+      btn.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
       if(window.i18nUpdateThemeLabel){ window.i18nUpdateThemeLabel(theme); }
     }
+
+    function setTheme(theme, { persist = true, pulse = false } = {}){
+      if(theme === 'light'){
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      if(persist){
+        try { localStorage.setItem('theme', theme); } catch(e) { /* localStorage unavailable */ }
+      }
+      render(theme);
+      if(pulse){
+        btn.classList.remove('light-theme', 'dark-theme');
+        btn.style.animationIterationCount = '1';
+        // force reflow so the pulse animation restarts even if the class name is unchanged
+        void btn.offsetWidth;
+        btn.classList.add(theme === 'light' ? 'light-theme' : 'dark-theme');
+      }
+    }
+
     btn.addEventListener('click', () => {
-      theme = theme === 'light' ? 'dark' : 'light';
-      apply();
+      setTheme(currentTheme() === 'light' ? 'dark' : 'light', { pulse: true });
     });
-    apply();
+
+    // Reflect whatever theme the pre-paint script already applied (no flash, just sync labels/icon),
+    // plus a small welcome pulse on the toggle so it doesn't look inert.
+    const initial = currentTheme();
+    render(initial);
+    btn.classList.add(initial === 'light' ? 'light-theme' : 'dark-theme');
+    btn.style.animationIterationCount = '3';
   })();
 
   // mobile nav
@@ -1248,23 +1264,6 @@
 
     apply(currentLang);
   })();
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const themeToggle = document.getElementById('themeToggle');
-        
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        
-        if (prefersDarkScheme.matches) {
-            document.body.classList.add('dark-theme');
-            themeToggle.classList.add('dark-theme');
-        } else {
-            document.body.classList.add('light-theme');
-            themeToggle.classList.add('light-theme');
-        }
-        
-        themeToggle.style.animationIterationCount = '3';
-    });
-
 
   /* ============ EASTER EGGS ============ */
   document.addEventListener('DOMContentLoaded', function() {
