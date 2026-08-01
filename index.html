@@ -585,7 +585,7 @@
         <div class="hero-actions">
           <a href="#projects" class="btn btn-ghost" data-i18n="hero.viewProjects">View Projects</a>
           <a href="#contact" class="btn btn-primary" data-i18n="hero.getInTouch">Get in Touch</a>
-          <a href="DmitryZSer.pdf" download class="btn btn-ghost" data-i18n="hero.downloadCv">Download CV ↓</a>
+          <a href="DmitryZSer_en.pdf" download id="cvLinkHero" class="btn btn-ghost" data-i18n="hero.downloadCv">Download CV ↓</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -893,7 +893,7 @@
         <p data-i18n="contact.body">Open to full-stack, data-engineering, and automation contract work. Email is the most reliable way to reach me — GitHub is where the code lives.</p>
         <div class="contact-actions">
           <a href="mailto:zhuravskiy.work@gmail.com" class="btn btn-primary">zhuravskiy.work@gmail.com</a>
-          <a href="DmitryZSer.pdf" download class="btn btn-ghost" data-i18n="hero.downloadCv">Download CV ↓</a>
+          <a href="DmitryZSer_en.pdf" download id="cvLinkContact" class="btn btn-ghost" data-i18n="hero.downloadCv">Download CV ↓</a>
           <a href="https://github.com/DmitryZSer" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="contact.github">GitHub Profile</a>
           <a href="https://www.linkedin.com/in/dmitry-zhuravskiy-6252a9425" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
           <a href="https://t.me/DmitryZSer" target="_blank" rel="noopener" class="btn btn-ghost">Telegram</a>
@@ -1273,6 +1273,11 @@
       }
 
       if(window.setTerminalLanguage){ window.setTerminalLanguage(lang); }
+
+      const cvFile = lang === 'ru' ? 'DmitryZSer_ru.pdf' : 'DmitryZSer_en.pdf';
+      document.querySelectorAll('#cvLinkHero, #cvLinkContact').forEach(link => {
+        link.setAttribute('href', cvFile);
+      });
     }
 
     window.i18nUpdateThemeLabel = function(theme){
